@@ -139,8 +139,18 @@ public:
         // - Stop exactly when you reach MAX_SPACES
         // - Return number successfully added
         // - Do not corrupt pointers if capacity is exceeded
-        cout << "addMany unwritten" << endl;
-        return 0;
+        int ctr = 0;
+
+        for (int i = 0; i < values.size(); i++) {
+            if (!addSpace(values[i])) {
+                break;
+            }
+
+            ctr++;
+        }
+
+        //cout << "addMany " << ctr << " unwritten" << endl;
+        return ctr;
     }
 
     // -------------------------------
