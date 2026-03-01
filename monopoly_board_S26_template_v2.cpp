@@ -29,9 +29,9 @@ public:
     MonopolySpace(string propertyName, string propertyColor, int value, int rent) {
         /* TODO: Define overloaded constructor here */
         this->propertyName = propertyName;
-        this->propertyName = propertyColor;
-        this->propertyName = value;
-        this->propertyName = rent;
+        this->propertyColor = propertyColor;
+        this->value = value;
+        this->rent = rent;
     }
 
     bool isEqual(MonopolySpace other) {
@@ -149,7 +149,7 @@ public:
             ctr++;
         }
 
-        //cout << "addMany " << ctr << " unwritten" << endl;
+        //cout << "addMany " << ctr << endl;
         return ctr;
     }
 
@@ -163,7 +163,21 @@ public:
         // - Detect and track passing GO:
         //   increment passGoCount when a move crosses from tail back to head
         // - Must handle empty list safely
-        cout << "movePlayer unwritten" << endl;
+
+        if (headNode == nullptr) {
+            cout << "Error, board is empty" << endl;
+            return;
+        }
+
+        for (int i = 0; i < steps; i++) {
+            if (playerNode == tailNode) {
+                playerNode = playerNode->nextNode;
+                passGoCount++;
+            }
+            else {
+                playerNode = playerNode->nextNode;
+            }
+        }
     }
 
     int getPassGoCount() {
@@ -179,7 +193,16 @@ public:
         // - Must not infinite loop
         // - Must handle empty list
         // - Output must be deterministic and readable
-        cout << "printFromPlayer unwritten" << endl;
+        if (headNode == nullptr || count <= 0) {
+            cout << "Error, board is empty or count is too small" << endl;
+            return;
+        }
+
+        Node<T> *temp = playerNode;
+        for (int i = 0; i < count; i++) {
+            cout << temp->data.propertyName << ", " << temp->data.propertyColor << ", " << temp->data.value << ", " << temp->data.rent << endl;
+            temp = temp->nextNode;
+        }
     }
 
     // Optional helper: print full board once (one full cycle)
@@ -274,14 +297,16 @@ int main() {
     // The only requirement: never exceed MAX_SPACES and keep the list circular.
     //
     // Example (hardcoded) usage:
-    // vector<MonopolySpace> spaces;
-    // spaces.push_back(MonopolySpace("GO","None",0,0));
+    vector<MonopolySpace> spaces;
+    for (int i = 0; i < 20; i++) {
+        spaces.push_back(MonopolySpace("GO","None",0,0));
+    }
     // ...
-    // board.addMany(spaces);
+    board.addMany(spaces);
     //
     // NOTE: This starter calls addSpace once to show the intended API,
     // but your final submission should build a meaningful board.
-    board.addSpace(MonopolySpace("GO", "None", 0, 0));
+    //board.addSpace(MonopolySpace("GO", "None", 0, 0));
 
     // -------------------------------
     // Playable Traversal Loop
