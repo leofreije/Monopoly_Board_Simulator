@@ -245,25 +245,25 @@ public:
     // -------------------------------
     // Advanced Option B (Level 2): Mirror the Board (Circular Reversal)
     // -------------------------------
-    void mirrorBoard() {
-        // TODO:
-        // - Reverse the direction of the circular list by reversing next pointers
-        // - Preserve circular structure
-        // - Correctly handle empty list and single-node list
-        // - Player cursor must remain on the same logical space after reversal
-        cout << "mirrorBoard unwritten" << endl;
-    }
-
-    // -------------------------------
-    // Edge-case helper: countSpaces O(n)
-    // -------------------------------
-    int countSpaces() {
-        // TODO:
-        // - Must be O(n), traverse exactly once with correct stop condition
-        // - Do NOT rely on nodeCount for this method
-        cout << "countSpaces unwritten" << endl;
-        return 0;
-    }
+    // void mirrorBoard() {
+    //     // TODO:
+    //     // - Reverse the direction of the circular list by reversing next pointers
+    //     // - Preserve circular structure
+    //     // - Correctly handle empty list and single-node list
+    //     // - Player cursor must remain on the same logical space after reversal
+    //     cout << "mirrorBoard unwritten" << endl;
+    // }
+    //
+    // // -------------------------------
+    // // Edge-case helper: countSpaces O(n)
+    // // -------------------------------
+    // int countSpaces() {
+    //     // TODO:
+    //     // - Must be O(n), traverse exactly once with correct stop condition
+    //     // - Do NOT rely on nodeCount for this method
+    //     cout << "countSpaces unwritten" << endl;
+    //     return 0;
+    // }
 
     // -------------------------------
     // Cleanup
@@ -273,7 +273,20 @@ public:
         // - Safely delete all nodes
         // - Tip: if tailNode exists, break the cycle first: tailNode->nextNode = nullptr
         // - Then delete like a normal singly linked list
-        cout << "clear unwritten" << endl;
+        if (tailNode != nullptr) {
+            tailNode->nextNode = nullptr;
+        }
+
+        Node<T> *temp = headNode;
+
+        while (headNode != nullptr) {
+            headNode = headNode->nextNode;
+            delete temp;
+            temp = headNode;
+        }
+
+        headNode = nullptr;
+        tailNode = nullptr;
     }
 };
 
