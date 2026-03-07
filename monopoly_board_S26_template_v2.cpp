@@ -36,13 +36,12 @@ public:
 
     bool isEqual(MonopolySpace other) {
         /* TODO: Define isEqual here (compare by name is fine if you enforce uniqueness) */
-        return false;
+        return this->propertyName == other.propertyName;;
     }
 
     void print() {
         /* TODO: Define print here */
-        // Example style:
-        // cout << propertyName << " | " << propertyColor << " | $" << value << " | Rent " << rent;
+        cout << "Name: " << propertyName << ", Color: " << propertyColor << ", Value: $" << value << ", Rent: " << rent;
     }
 };
 
