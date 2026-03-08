@@ -36,7 +36,7 @@ public:
 
     bool isEqual(MonopolySpace other) {
         /* TODO: Define isEqual here (compare by name is fine if you enforce uniqueness) */
-        return this->propertyName == other.propertyName;;
+        return this->propertyName == other.propertyName;
     }
 
     void print() {
@@ -148,7 +148,6 @@ public:
             ctr++;
         }
 
-        //cout << "addMany " << ctr << endl;
         return ctr;
     }
 
@@ -236,33 +235,23 @@ public:
         // - Traverse ring exactly once
         // - Collect matching names in vector<string>
         // - Return matches
-        cout << "findByColor unwritten" << endl;
         vector<string> matches;
+        Node<T> *temp = headNode;
+
+        if (headNode == nullptr) {
+            return matches;
+        }
+
+        do {
+            if (temp->data.propertyColor == color) {
+                matches.push_back(temp->data.propertyName);
+            }
+            temp = temp->nextNode;
+        } while (temp != headNode);
+
+
         return matches;
     }
-
-    // -------------------------------
-    // Advanced Option B (Level 2): Mirror the Board (Circular Reversal)
-    // -------------------------------
-    // void mirrorBoard() {
-    //     // TODO:
-    //     // - Reverse the direction of the circular list by reversing next pointers
-    //     // - Preserve circular structure
-    //     // - Correctly handle empty list and single-node list
-    //     // - Player cursor must remain on the same logical space after reversal
-    //     cout << "mirrorBoard unwritten" << endl;
-    // }
-    //
-    // // -------------------------------
-    // // Edge-case helper: countSpaces O(n)
-    // // -------------------------------
-    // int countSpaces() {
-    //     // TODO:
-    //     // - Must be O(n), traverse exactly once with correct stop condition
-    //     // - Do NOT rely on nodeCount for this method
-    //     cout << "countSpaces unwritten" << endl;
-    //     return 0;
-    // }
 
     // -------------------------------
     // Cleanup
@@ -381,16 +370,18 @@ int main() {
 
         cout << "Times passed GO so far: " << board.getPassGoCount() << endl;
     }
-
     // -------------------------------
     // Advanced Feature Demos (students choose path)
     // -------------------------------
     // Option A examples:
     // board.removeByName("Baltic Avenue");
-    // vector<string> brownProps = board.findByColor("Brown");
-    //
-    // Option B example:
-    // board.mirrorBoard();
+    // printBoardOnce();
+
+    vector<string> brownProps = board.findByColor("Brown");
+
+    for (int i = 0; i < brownProps.size(); i++) {
+        cout << brownProps[i] << endl;
+    }
 
     return 0;
 }
