@@ -207,7 +207,15 @@ public:
     void printBoardOnce() {
         // TODO:
         // - Traverse exactly one full cycle and print each node
-        cout << "printBoardOnce unwritten" << endl;
+        if (headNode == nullptr) {
+            return;
+        }
+
+        Node<T> *temp = headNode;
+        do {
+            cout << temp->data.propertyName << ", " << temp->data.propertyColor << ", " << temp->data.value << ", " << temp->data.rent << endl;
+            temp = temp->nextNode;
+        } while (temp != headNode);
     }
 
     // -------------------------------
@@ -353,7 +361,6 @@ int main() {
 
     spaces.push_back(MonopolySpace("Park Place","Dark Blue",350,35));
     spaces.push_back(MonopolySpace("Boardwalk","Dark Blue",400,50));
-    spaces.push_back(MonopolySpace("Imperial Gardens", "Dark Blue", 420, 55));
     board.addMany(spaces);
 
     // -------------------------------
@@ -375,10 +382,10 @@ int main() {
     // -------------------------------
     // Option A examples:
     // board.removeByName("Baltic Avenue");
-    // printBoardOnce();
+    board.printBoardOnce();
 
+    cout<< "\nFind Spaces by Color:" << endl;
     vector<string> brownProps = board.findByColor("Brown");
-
     for (int i = 0; i < brownProps.size(); i++) {
         cout << brownProps[i] << endl;
     }
