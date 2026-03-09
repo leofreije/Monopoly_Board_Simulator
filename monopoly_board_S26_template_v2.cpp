@@ -19,7 +19,6 @@ public:
     int rent;
 
     MonopolySpace() {
-        // TODO: define default constructor (recommended)
         propertyName = "";
         propertyColor = "";
         value = 0;
@@ -27,20 +26,18 @@ public:
     }
 
     MonopolySpace(string propertyName, string propertyColor, int value, int rent) {
-        /* TODO: Define overloaded constructor here */
         this->propertyName = propertyName;
         this->propertyColor = propertyColor;
         this->value = value;
         this->rent = rent;
     }
 
+    //checks if two spaces have the same name
     bool isEqual(MonopolySpace other) {
-        /* TODO: Define isEqual here (compare by name is fine if you enforce uniqueness) */
         return this->propertyName == other.propertyName;
     }
 
     void print() {
-        /* TODO: Define print here */
         cout << "Name: " << propertyName << ", Color: " << propertyColor << ", Value: $" << value << ", Rent: " << rent;
     }
 };
@@ -87,27 +84,10 @@ public:
     }
 
     // -------------------------------
-    // Board Construction Policy (Reminder)
-    // -------------------------------
-    // Spaces are added during board construction BEFORE gameplay.
-    // You choose how to construct the board:
-    // - hardcode spaces, read from file, or generate programmatically
-    // The only non-negotiable requirement:
-    // - enforce MAX_SPACES
-    // - maintain circular integrity
-    // -------------------------------
-
-    // -------------------------------
     // Core A: Add a Space with Capacity Enforcement
     // -------------------------------
+    //adds a space after checking that nodeCount is not MAX_SPACES
     bool addSpace(T value) {
-        // TODO:
-        // - If nodeCount == MAX_SPACES return false (do not corrupt list)
-        // - Create new node
-        // - If empty list: head=tail=player=new, new->next=head
-        // - Else: tail->next=new, tail=new, tail->next=head
-        // - nodeCount++
-
         if (nodeCount == MAX_SPACES) {
             return false;
         }
@@ -115,7 +95,8 @@ public:
         Node<T> *newNode = new Node<T>(value);
 
         if (headNode == nullptr) {
-            headNode = tailNode = newNode;
+            headNode = newNode;
+            tailNode = newNode;
             newNode->nextNode = headNode;
             playerNode = headNode;
         }
@@ -132,12 +113,8 @@ public:
     // -------------------------------
     // Core B: Add Multiple Spaces at Once
     // -------------------------------
+    //adds all spaces to the board sequentially until MAX_SPACES is reached, returning number of spaces successfully added
     int addMany(vector<T> values) {
-        // TODO:
-        // - Add sequentially until full
-        // - Stop exactly when you reach MAX_SPACES
-        // - Return number successfully added
-        // - Do not corrupt pointers if capacity is exceeded
         int ctr = 0;
 
         for (int i = 0; i < values.size(); i++) {
@@ -154,13 +131,8 @@ public:
     // -------------------------------
     // Core C: Traversal-Based Player Movement
     // -------------------------------
+    //safely moves playerNode forward step times, incrementing passGOCount when passing GO space
     void movePlayer(int steps) {
-        // TODO:
-        // - Move playerNode forward 'steps' times, node-by-node
-        // - Wrap naturally because list is circular
-        // - Detect and track passing GO:
-        //   increment passGoCount when a move crosses from tail back to head
-        // - Must handle empty list safely
 
         if (headNode == nullptr) {
             cout << "Error, board is empty" << endl;
@@ -185,12 +157,8 @@ public:
     // -------------------------------
     // Core D: Controlled Board Display
     // -------------------------------
+    //prints 'count' spaces starting from playerNode
     void printFromPlayer(int count) {
-        // TODO:
-        // - Print exactly 'count' nodes starting from playerNode
-        // - Must not infinite loop
-        // - Must handle empty list
-        // - Output must be deterministic and readable
         if (headNode == nullptr || count <= 0) {
             cout << "Error, board is empty or count is too small" << endl;
             return;
@@ -198,22 +166,22 @@ public:
 
         Node<T> *temp = playerNode;
         for (int i = 0; i < count; i++) {
-            cout << temp->data.propertyName << ", " << temp->data.propertyColor << ", " << temp->data.value << ", " << temp->data.rent << endl;
+            temp->data.print();
+            cout << endl;
             temp = temp->nextNode;
         }
     }
 
-    // Optional helper: print full board once (one full cycle)
+    //Traverses the entire board and prints each node once
     void printBoardOnce() {
-        // TODO:
-        // - Traverse exactly one full cycle and print each node
         if (headNode == nullptr) {
             return;
         }
 
         Node<T> *temp = headNode;
         do {
-            cout << temp->data.propertyName << ", " << temp->data.propertyColor << ", " << temp->data.value << ", " << temp->data.rent << endl;
+            temp->data.print();
+            cout << endl;
             temp = temp->nextNode;
         } while (temp != headNode);
     }
@@ -221,28 +189,68 @@ public:
     // -------------------------------
     // Advanced Option A (Level 1): removeByName
     // -------------------------------
+    //deletes a node by name, returns true if deleted or false otherwise
+    //enforces edge cases and maintains circular link
+    //decrements nodeCount when a node is deleted
     bool removeByName(string name) {
-        // TODO:
-        // - Delete FIRST matching node
-        // - Must handle:
-        //   - deleting head
-        //   - deleting tail
-        //   - deleting the only-node list
-        // - Maintain circular link tail->next=head
-        // - If playerNode points to deleted node, move playerNode to a safe node
-        // - nodeCount--
-        cout << "removeByName unwritten" << endl;
+        Node<T> *temp = headNode;
+        Node<T> *prev = tailNode;
+
+        if (headNode == nullptr) { //Check if list is empty
+            return false;
+        }
+
+        if (headNode == tailNode && headNode->data.propertyName == name) { //Delete single node list
+
+            if (playerNode == headNode) {
+                playerNode = nullptr;
+            }
+
+            delete headNode;
+            headNode = nullptr;
+            tailNode = nullptr;
+            nodeCount--;
+            return true;
+        }
+
+        do {
+            if(temp->data.propertyName == name && playerNode == temp) { //ensures playerNode points to a valid node
+                playerNode = temp->nextNode;
+            }
+
+            if (temp->data.propertyName == name && temp == headNode) { //deletes head
+                headNode = headNode->nextNode;
+                tailNode->nextNode = headNode;
+                delete temp;
+                nodeCount--;
+                return true;
+            }
+            else if (temp->data.propertyName == name && temp == tailNode) { //deletes tail
+                tailNode = prev;
+                tailNode->nextNode = headNode;
+                delete temp;
+                nodeCount--;
+                return true;
+            }
+            else if (temp->data.propertyName == name) { //deletes middle
+                prev->nextNode = temp->nextNode;
+                delete temp;
+                nodeCount--;
+                return true;
+            }
+
+            prev = temp;
+            temp = temp->nextNode;
+
+        } while (temp != headNode);
         return false;
     }
 
     // -------------------------------
     // Advanced Option A (Level 1): findByColor
     // -------------------------------
+    //returns a vector<string> of all space names that match color
     vector<string> findByColor(string color) {
-        // TODO:
-        // - Traverse ring exactly once
-        // - Collect matching names in vector<string>
-        // - Return matches
         vector<string> matches;
         Node<T> *temp = headNode;
 
@@ -257,18 +265,14 @@ public:
             temp = temp->nextNode;
         } while (temp != headNode);
 
-
         return matches;
     }
 
     // -------------------------------
     // Cleanup
     // -------------------------------
+    //safely deletes all nodes
     void clear() {
-        // TODO:
-        // - Safely delete all nodes
-        // - Tip: if tailNode exists, break the cycle first: tailNode->nextNode = nullptr
-        // - Then delete like a normal singly linked list
         if (tailNode != nullptr) {
             tailNode->nextNode = nullptr;
         }
@@ -283,12 +287,16 @@ public:
 
         headNode = nullptr;
         tailNode = nullptr;
+        playerNode = nullptr;
+        nodeCount = 0;
+        cout << "\nBoard Cleared" << endl;
     }
 };
 
 // -------------------------------
 // Main: playable loop demo
 // -------------------------------
+
 int rollDice2to12() {
     return (rand() % 6 + 1) + (rand() % 6 + 1);
 }
@@ -301,11 +309,8 @@ int main() {
     // -------------------------------
     // Board Construction Phase
     // -------------------------------
-    // You decide how to build the board:
-    // - hardcode spaces, load from file, or generate spaces programmatically
-    // The only requirement: never exceed MAX_SPACES and keep the list circular.
 
-    //Board creation
+    //Board creation using hardcoded spaces
     vector<MonopolySpace> spaces;
     spaces.push_back(MonopolySpace("GO","Gray",0,0));
 
@@ -377,11 +382,14 @@ int main() {
 
         cout << "Times passed GO so far: " << board.getPassGoCount() << endl;
     }
+
     // -------------------------------
-    // Advanced Feature Demos (students choose path)
+    // Advanced A Feature Demo
     // -------------------------------
-    // Option A examples:
-    // board.removeByName("Baltic Avenue");
+
+    string name = "Reading Railroad";
+    cout<< "\nRemove Space by Name: " << name << endl;
+    board.removeByName(name);
     board.printBoardOnce();
 
     cout<< "\nFind Spaces by Color:" << endl;
@@ -390,5 +398,6 @@ int main() {
         cout << brownProps[i] << endl;
     }
 
+    board.clear();
     return 0;
 }
