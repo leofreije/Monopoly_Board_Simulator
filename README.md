@@ -1,7 +1,7 @@
 # Monopoly Board Simulator
 
 ## Overview
-This project implements a Monopoly-style board using a circular linked list in C++. The circular linked list serves as a function for both traversal and gameplay
+This project implements a Monopoly-style board using a circular linked list in C++. The circular linked list is used for both traversal and gameplay.
 
 This program emphasizes: 
 - Circular linked list operations
